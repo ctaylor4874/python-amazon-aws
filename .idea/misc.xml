@@ -41,6 +41,7 @@
   </component>
   <component name="ProjectResources">
     <resource url="http://mws.amazonservices.com/schema/Products/2011-10-01/default.xsd" location="" />
+    <resource url="http://webservices.amazon.com/AWSECommerceService/2011-08-01" location="$USER_HOME$/xsd/AWSECommerceService.xsd" />
   </component>
   <component name="ProjectRootManager" version="2" project-jdk-name="Python 2.7.9 virtualenv at ~/PycharmProjects/python-amazon-aws/venv" project-jdk-type="Python SDK" />
   <component name="VagrantProjectSettings">
