@@ -134,6 +134,9 @@ class Offer(BaseLookupWrapper):
     def is_eligible_for_prime(self):
         return self.xpath('//a:OfferListing/a:IsEligibleForPrime/text()')
 
+    def __repr__(self):
+        return '<Offer merchant_name={} price={} prime={}>'.format(self.merchant_name, self.price, self.is_eligible_for_prime)
+
 
 class Item(BaseLookupWrapper):
     """
@@ -212,6 +215,12 @@ class Item(BaseLookupWrapper):
     def offers(self):
         return [Offer(x) for x in self.xpath('//a:Offers/a:Offer')]
 
+    def __repr__(self):
+        return '<Item asin={} total_offers={} sales_rank={}>'.format(self.asin, self.total_offers, self.sales_rank)
+
+    def __iter__(self):
+        return self.offers.__iter__()
+
 
 class ItemLookup(BaseLookupWrapper):
 
@@ -219,3 +228,5 @@ class ItemLookup(BaseLookupWrapper):
     def items(self):
         return [Item(x) for x in self.xpath('//a:Items/a:Item')]
 
+    def __iter__(self):
+        return self.items.__iter__()
