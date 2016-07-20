@@ -200,6 +200,7 @@ class ItemLinks(BaseLookupWrapper):
     def detail_page_url(self):
         return self.xpath('./a:DetailPageURL/text()')
 
+    # ToDo: item_links should return a list of objects which parses out url and description to maintain consistency
     @property
     def item_links(self):
         item_links = [BaseLookupWrapper(x) for x in self.xpath('./a:ItemLinks//a:ItemLink')]
