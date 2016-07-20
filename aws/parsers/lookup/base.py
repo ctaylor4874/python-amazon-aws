@@ -29,7 +29,10 @@ def parse_float(f):
     def inner(*args, **kwargs):
         i = f(*args, **kwargs)
         if i:
-            return float(re.sub('[^\d^\.]', '', i))
+            x = re.sub('[^\d^\.]', '', i).strip('.')
+            if not x:
+                return
+            return float(x)
         return
     return inner
 
