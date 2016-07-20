@@ -1,4 +1,5 @@
 import logging
+from functools import wraps
 
 from lxml import etree
 
@@ -9,7 +10,7 @@ def first_element_or_none(element_list):
     :param element_list: lxml selector result
     :return:
     """
-    if element_list:
+    if len(element_list):
         return element_list[0]
     return
 
@@ -22,6 +23,7 @@ def first_element(f):
     :param f:
     :return:
     """
+    @wraps
     def inner(*args, **kwargs):
         return first_element_or_none(f(*args, **kwargs))
     return inner
@@ -38,7 +40,9 @@ class BaseElementWrapper(object):
         self.logger = logging.getLogger(self.__class__.__name__)
 
     def __str__(self):
-        return etree.tostring(self.element)
+        if self.element is not None:
+            return etree.tostring(self.element)
+        return '<Element Non Existent>'
 
     @classmethod
     def load(cls, xml_string):
