@@ -70,8 +70,25 @@ class Offers(BaseLookupWrapper):
             return self.xpath('./a:OfferAttributes/a:Condition/text()')
 
         @property
-        def offer_listings(self):
+        def _offer_listings(self):
             return [self.Listing(x) for x in self.xpath('.//a:OfferListing')]
+
+        @property
+        def offer_listings(self):
+            """
+            Deprecated since offer listings element will always only contain the
+            lowest priced/buy box seller.
+            :return:
+            """
+            import warnings
+            warnings.warn('offer_listings is no longer useful since only one offer listing is returned. Use offer_listing instead')
+            return self._offer_listings
+
+        @property
+        def offer_listing(self):
+            if not self._offer_listings:
+                return None
+            return self._offer_listings[0]
 
         @property
         @first_element
@@ -202,7 +219,9 @@ class BaseImageWrapper(BaseLookupWrapper):
         return self._mk_img(xpath=xpath)
 
     def _mk_img(self, xpath=None, elems=None):
-        elem = elems or self.xpath(xpath)
+        # elem should at least contain one element even if it's None to prevent IndexErrors
+        # on the next line.
+        elem = elems or self.xpath(xpath) or [None]
         return self.Img(elem[0])
 
     class Img(BaseLookupWrapper):
@@ -574,8 +593,6 @@ class BrowseNodes(BaseLookupWrapper):
         return self.BrowseNode(self._first_browse_node)
 
 
-
-
 # ToDo: EditorialReview
 
 # ToDo: ItemIds
@@ -606,4 +623,17 @@ class Medium(Small, OfferSummary, SalesRank, Images):
 
 
 class Large(Medium, Offers, BrowseNodes):
+    pass
+
+
+class OfferFull(Offers, OfferSummary):
+    """
+    Dont mix with Large. It will cause an MRO Error.
+
+    Large already contains the Offers class which contains all response groups returned
+    by OfferFull. Offer full should only be used if you're Requesting OfferFull in conjuction
+    with anything other than Large.
+
+    If requesting Large and OfferFull response groups, just use Large.
+    """
     pass
