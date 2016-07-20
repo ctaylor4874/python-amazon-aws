@@ -524,9 +524,59 @@ class ItemAttributes(BaseDimensionsWrapper):
         return [x.strip() for x in self.xpath('./a:ItemAttributes/a:UPCList//a:UPCListElement/text()') if x.strip()]
 
 
-# ToDo: EditorialReview
+class BrowseNodes(BaseLookupWrapper):
 
-# ToDo: BrowseNodes
+    class BrowseNode(BaseLookupWrapper):
+
+        @property
+        @first_element
+        def browse_node_id(self):
+            return self.xpath('./a:BrowseNodeId/text()')
+
+        @property
+        @first_element
+        def name(self):
+            return self.xpath('./a:Name/text()')
+
+        @property
+        @first_element
+        def _next_ancestor(self):
+            return self.xpath('./a:Ancestors/a:BrowseNode')
+
+        @property
+        def has_ancestor(self):
+            return self._next_ancestor is not None
+
+        @property
+        def next_ancestor(self):
+            return BrowseNodes.BrowseNode(self._next_ancestor)
+
+        def __repr__(self):
+            return '<BrowseNode name={} browse_node_id={}>'.format(self.name, self.browse_node_id)
+
+    @property
+    def browse_nodes(self):
+        l = []
+        browse_node = self.first_browse_node
+        l.append(browse_node)
+        while browse_node.has_ancestor:
+            browse_node = browse_node.next_ancestor
+            l.append(browse_node)
+        return l
+
+    @property
+    @first_element
+    def _first_browse_node(self):
+        return self.xpath('./a:BrowseNodes/a:BrowseNode')
+
+    @property
+    def first_browse_node(self):
+        return self.BrowseNode(self._first_browse_node)
+
+
+
+
+# ToDo: EditorialReview
 
 # ToDo: ItemIds
 
@@ -555,5 +605,5 @@ class Medium(Small, OfferSummary, SalesRank, Images):
     pass
 
 
-class Large(Medium, Offers):
+class Large(Medium, Offers, BrowseNodes):
     pass

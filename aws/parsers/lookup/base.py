@@ -65,6 +65,13 @@ class AWSError(Exception):
         self.code = err_wrapper.code
         Exception.__init__(self, '{} - {}'.format(self.code, self.msg))
 
+    def __repr__(self):
+        return '<{} code={} message={}>'.format(self.__class__.__name__, self.code, self.msg)
+
+
+class ItemLookupRequestError(AWSError):
+    pass
+
 
 class BaseLookupWrapper(BaseElementWrapper):
     """
@@ -88,7 +95,7 @@ class BaseLookupWrapper(BaseElementWrapper):
 
 class BaseErrorWrapper(BaseLookupWrapper):
     """
-    Used to parse and/or raise an error when a response has returned an error xml
+    Used to parse and/or raise an error when a response has any Errors tag.
     """
 
     namespaces = {
@@ -101,17 +108,12 @@ class BaseErrorWrapper(BaseLookupWrapper):
     @property
     @first_element
     def code(self):
-        return self.xpath('./a:Error/a:Code/text()')
+        return self.xpath('//a:Code/text()')
 
     @property
     @first_element
     def message(self):
-        return self.xpath('./a:Error/a:Message/text()')
-
-    @property
-    @first_element
-    def request_id(self):
-        return self.xpath('./a:RequestId/text()')
+        return self.xpath('//a:Message/text()')
 
     def has_error(self):
         """
@@ -127,6 +129,36 @@ class BaseErrorWrapper(BaseLookupWrapper):
         """
         if self.has_error():
             raise AWSError(self)
+
+    def __repr__(self):
+        return '<{} code={} message={}>'.format(self.__class__.__name__, self.code, self.message)
+
+
+class FullErrorResponseWrapper(BaseErrorWrapper):
+    """
+    Used to parse a response which is entirely an error.
+    """
+
+    @property
+    @first_element
+    def request_id(self):
+        return self.xpath('./a:RequestId/text()')
+
+
+class ItemLookupRequestErrorWrapper(BaseErrorWrapper):
+    """
+    Used to parse an ItemLookup response which has an error
+    """
+
+    namespaces = BaseLookupWrapper.namespaces
+
+    def raise_for_error(self):
+        """
+        Raise an ItemLookupRequestError if an error exists.
+        :return:
+        """
+        if self.has_error():
+            raise ItemLookupRequestError(self)
 
 
 class ItemLookupResponse(BaseLookupWrapper):
@@ -184,6 +216,10 @@ class Items(BaseLookupWrapper):
         @first_element
         def variation_page(self):
             return self.xpath('./a:ItemLookupRequest/a:VariationPage/text()')
+
+        @property
+        def errors(self):
+            return [ItemLookupRequestErrorWrapper(x) for x in self.xpath('.//a:Errors/a:Error')]
 
     def __init__(self, element, psr_cls):
         """
