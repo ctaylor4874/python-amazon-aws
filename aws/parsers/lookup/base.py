@@ -55,7 +55,7 @@ def first_element(f):
     def inner(*args, **kwargs):
         i = f(*args, **kwargs)
         if i:
-            return i[0]
+            return i[0].encode('ascii', errors='ignore')
         return
     return inner
 

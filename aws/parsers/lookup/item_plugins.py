@@ -96,7 +96,7 @@ class Offers(BaseLookupWrapper):
             return self.xpath('./a:Merchant/a:Name/text()')
 
         def __repr__(self):
-            return '<Offer merchant_name={} condition={} offer_listings={}>'.format(self.merchant_name, self.condition, self.offer_listings)
+            return '<Offer merchant_name={} condition={} price={} prime={}>'.format(self.merchant_name, self.condition, self.offer_listing.price, self.offer_listing.is_eligible_for_prime)
 
     @property
     @parse_int
