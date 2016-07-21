@@ -133,6 +133,10 @@ class BaseErrorWrapper(BaseLookupWrapper):
         if self.has_error():
             raise AWSError(self)
 
+    def as_error(self):
+        if self.has_error():
+            return AWSError(self)
+
     def __repr__(self):
         return '<{} code={} message={}>'.format(self.__class__.__name__, self.code, self.message)
 
@@ -162,6 +166,10 @@ class ItemLookupRequestErrorWrapper(BaseErrorWrapper):
         """
         if self.has_error():
             raise ItemLookupRequestError(self)
+
+    def as_error(self):
+        if self.has_error():
+            return ItemLookupRequestError(self)
 
 
 class ItemLookupResponse(BaseLookupWrapper):
