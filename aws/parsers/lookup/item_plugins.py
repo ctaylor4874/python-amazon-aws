@@ -131,52 +131,60 @@ class OfferSummary(BaseLookupWrapper):
     """
 
     @property
-    @parse_float
-    @first_element
-    def lowest_new_price(self):
-        return self.xpath('./a:OfferSummary/a:LowestNewPrice/a:FormattedPrice/text()')
+    def offer_summary(self):
+        r = self.xpath('./a:OfferSummary')
+        if r:
+            return self.Summary(r[0])
+        return self.Summary(None)
 
-    @property
-    @parse_float
-    @first_element
-    def lowest_used_price(self):
-        return self.xpath('./a:OfferSummary/a:LowestUsedPrice/a:FormattedPrice/text()')
+    class Summary(BaseLookupWrapper):
+        @property
+        @parse_float
+        @first_element
+        def lowest_new_price(self):
+            return self.xpath('./a:LowestNewPrice/a:FormattedPrice/text()')
 
-    @property
-    @parse_float
-    @first_element
-    def lowest_collectible_price(self):
-        return self.xpath('./a:OfferSummary/a:LowestCollectiblePrice/a:FormattedPrice/text()')
+        @property
+        @parse_float
+        @first_element
+        def lowest_used_price(self):
+            return self.xpath('./a:LowestUsedPrice/a:FormattedPrice/text()')
 
-    @property
-    @parse_float
-    @first_element
-    def lowest_refurbished_price(self):
-        return self.xpath('./a:OfferSummary/a:LowestRefurbishedPrice/a:FormattedPrice/text()')
+        @property
+        @parse_float
+        @first_element
+        def lowest_collectible_price(self):
+            return self.xpath('./a:LowestCollectiblePrice/a:FormattedPrice/text()')
 
-    @property
-    @parse_int
-    @first_element
-    def total_new(self):
-        return self.xpath('./a:OfferSummary/a:TotalNew/text()')
+        @property
+        @parse_float
+        @first_element
+        def lowest_refurbished_price(self):
+            return self.xpath('./a:LowestRefurbishedPrice/a:FormattedPrice/text()')
 
-    @property
-    @parse_int
-    @first_element
-    def total_used(self):
-        return self.xpath('./a:OfferSummary/a:TotalUsed/text()')
+        @property
+        @parse_int
+        @first_element
+        def total_new(self):
+            return self.xpath('./a:TotalNew/text()')
 
-    @property
-    @parse_int
-    @first_element
-    def total_collectible(self):
-        return self.xpath('./a:OfferSummary/a:TotalCollectible/text()')
+        @property
+        @parse_int
+        @first_element
+        def total_used(self):
+            return self.xpath('./a:TotalUsed/text()')
 
-    @property
-    @parse_int
-    @first_element
-    def total_refurbished(self):
-        return self.xpath('./a:OfferSummary/a:TotalRefurbished/text()')
+        @property
+        @parse_int
+        @first_element
+        def total_collectible(self):
+            return self.xpath('./a:TotalCollectible/text()')
+
+        @property
+        @parse_int
+        @first_element
+        def total_refurbished(self):
+            return self.xpath('./a:TotalRefurbished/text()')
 
 
 class SalesRank(BaseLookupWrapper):
@@ -356,7 +364,7 @@ class BaseDimensionsWrapper(BaseLookupWrapper):
             return '<DimensionsElement length={} height={} width={}>'.format(self.length, self.height, self.width)
 
 
-class ItemAttributes(BaseDimensionsWrapper):
+class ItemAttributes(BaseLookupWrapper):
     """
     Used to wrap the elements which are returned by the ItemAttributes ResponseGroup in the ItemLookup response.
 
@@ -364,188 +372,192 @@ class ItemAttributes(BaseDimensionsWrapper):
     """
     
     @property
-    @first_element
-    def actor(self):  # ToDo: test
-        return self.xpath('./a:ItemAttributes/a:Actor/text()')
+    def item_attributes(self):
+        r = self.xpath('./a:ItemAttributes')
+        if r:
+            return ItemAttributes.Attributes(r[0])
+        return ItemAttributes.Attributes(None)
+
+    class Attributes(BaseDimensionsWrapper):
+        @property
+        @first_element
+        def actor(self):  # ToDo: test
+            return self.xpath('./a:Actor/text()')
+        
+        @property
+        @first_element
+        def artist(self):  # ToDo: test
+            return self.xpath('./a:Artist/text()')
+        
+        @property
+        @first_element
+        def aspect_ratio(self):  # ToDo: test
+            return self.xpath('./a:AspectRatio/text()')
     
-    @property
-    @first_element
-    def artist(self):  # ToDo: test
-        return self.xpath('./a:ItemAttributes/a:Artist/text()')
+        @property
+        @first_element
+        def audience_rating(self):  # ToDo: test
+            return self.xpath('./a:AudienceRating/text()')
     
-    @property
-    @first_element
-    def aspect_ratio(self):  # ToDo: test
-        return self.xpath('./a:ItemAttributes/a:AspectRatio/text()')
-
-    @property
-    @first_element
-    def audience_rating(self):  # ToDo: test
-        return self.xpath('./a:ItemAttributes/a:AudienceRating/text()')
-
-    @property
-    @first_element
-    def audio_format(self):  # ToDo: test
-        return self.xpath('./a:ItemAttributes/a:AudioFormat/text()')
-
-    @property
-    @first_element
-    def author(self):  # ToDo: test
-        return self.xpath('./a:ItemAttributes/a:Author/text()')
-
-    @property
-    @first_element
-    def binding(self):
-        return self.xpath('./a:ItemAttributes/a:Binding/text()')
-
-    @property
-    @first_element
-    def brand(self):
-        return self.xpath('./a:ItemAttributes/a:Brand/text()')
-
-    @property
-    @first_element
-    def category(self):  # ToDo: test
-        return self.xpath('./a:ItemAttributes/a:Category/text()')
-
-    @property
-    @first_element
-    def cero_age_rating(self):  # ToDo: test
-        return self.xpath('./a:ItemAttributes/a:CEROAgeRating/text()')
-
-    @property
-    @first_element
-    def clothing_size(self):  # ToDo: test
-        return self.xpath('./a:ItemAttributes/a:ClothingSize/text()')
-
-    @property
-    @first_element
-    def color(self):  # ToDo: test
-        return self.xpath('./a:ItemAttributes/a:Color/text()')
-
-    # ToDo: Creator/Role
-
-    @property
-    def catalog_number_list(self):
-        return [x.strip() for x in self.xpath('./a:ItemAttributes/a:CatalogNumberList//text()') if x.strip()]
-
-    @property
-    @first_element
-    def ean(self):
-        return self.xpath('./a:ItemAttributes/a:EAN/text()')
-
-    @property
-    def ean_list(self):
-        return [x.strip() for x in self.xpath('./a:ItemAttributes/a:EANList/a:EANListElement//text()') if x.strip()]
-
-    @property
-    def features(self):
-        return [x.strip() for x in self.xpath('./a:ItemAttributes//a:Feature/text()') if x.strip()]
-
-    @property
-    @parse_bool
-    @first_element
-    def is_adult_product(self):
-        return self.xpath('./a:ItemAttributes/a:IsAdultProduct/text()')
-
-    @property
-    def item_dimensions(self):
-        return self.mk_dimens_from_xpath('./a:ItemAttributes/a:ItemDimensions')
-
-    @property
-    @first_element
-    def label(self):
-        return self.xpath('./a:ItemAttributes/a:Label/text()')
-
-    @property
-    @parse_float
-    @first_element
-    def list_price(self):
-        return self.xpath('./a:ItemAttributes/a:ListPrice/a:FormattedPrice/text()')
-
-    @property
-    @first_element
-    def manufacturer(self):
-        return self.xpath('./a:ItemAttributes/a:Manufacturer/text()')
-
-    @property
-    @first_element
-    def model(self):
-        return self.xpath('./a:ItemAttributes/a:Model/text()')
-
-    @property
-    @first_element
-    def mpn(self):
-        return self.xpath('./a:ItemAttributes/a:MPN/text()')
-
-    @property
-    @parse_int
-    @first_element
-    def number_of_items(self):
-        return self.xpath('./a:ItemAttributes/a:NumberOfItems/text()')
-
-    @property
-    def package_dimensions(self):
-        return self.mk_dimens_from_xpath('./a:ItemAttributes/a:PackageDimensions')
-
-    @property
-    @parse_int
-    @first_element
-    def package_quantity(self):
-        return self.xpath('./a:ItemAttributes/a:PackageQuantity/text()')
-
-    @property
-    @first_element
-    def part_number(self):
-        return self.xpath('./a:ItemAttributes/a:PartNumber/text()')
-
-    @property
-    @first_element
-    def product_group(self):
-        return self.xpath('./a:ItemAttributes/a:ProductGroup/text()')
-
-    @property
-    @first_element
-    def product_type_name(self):
-        return self.xpath('./a:ItemAttributes/a:ProductTypeName/text()')
-
-    @property
-    @first_element
-    def publication_date(self):
-        return self.xpath('./a:ItemAttributes/a:PublicationDate/text()')
-
-    @property
-    @first_element
-    def publisher(self):
-        return self.xpath('./a:ItemAttributes/a:Publisher/text()')
-
-    @property
-    @first_element
-    def release_date(self):
-        return self.xpath('./a:ItemAttributes/a:ReleaseDate/text()')
-
-    @property
-    @first_element
-    def studio(self):
-        return self.xpath('./a:ItemAttributes/a:Studio/text()')
-
-    @property
-    @first_element
-    def title(self):
-        return self.xpath('./a:ItemAttributes/a:Title/text()')
-
-    @property
-    @first_element
-    def upc(self):
-        return self.xpath('./a:ItemAttributes/a:UPC/text()')
-
-    @property
-    def upc_list(self):
-        return [x.strip() for x in self.xpath('./a:ItemAttributes/a:UPCList//a:UPCListElement/text()') if x.strip()]
-
-    @property
-    def item_attributes_element(self):
-        return self.element
+        @property
+        @first_element
+        def audio_format(self):  # ToDo: test
+            return self.xpath('./a:AudioFormat/text()')
+    
+        @property
+        @first_element
+        def author(self):  # ToDo: test
+            return self.xpath('./a:Author/text()')
+    
+        @property
+        @first_element
+        def binding(self):
+            return self.xpath('./a:Binding/text()')
+    
+        @property
+        @first_element
+        def brand(self):
+            return self.xpath('./a:Brand/text()')
+    
+        @property
+        @first_element
+        def category(self):  # ToDo: test
+            return self.xpath('./a:Category/text()')
+    
+        @property
+        @first_element
+        def cero_age_rating(self):  # ToDo: test
+            return self.xpath('./a:CEROAgeRating/text()')
+    
+        @property
+        @first_element
+        def clothing_size(self):  # ToDo: test
+            return self.xpath('./a:ClothingSize/text()')
+    
+        @property
+        @first_element
+        def color(self):  # ToDo: test
+            return self.xpath('./a:Color/text()')
+    
+        # ToDo: Creator/Role
+    
+        @property
+        def catalog_number_list(self):
+            return [x.strip() for x in self.xpath('./a:CatalogNumberList//text()') if x.strip()]
+    
+        @property
+        @first_element
+        def ean(self):
+            return self.xpath('./a:EAN/text()')
+    
+        @property
+        def ean_list(self):
+            return [x.strip() for x in self.xpath('./a:EANList/a:EANListElement//text()') if x.strip()]
+    
+        @property
+        def features(self):
+            return [x.strip() for x in self.xpath('.//a:Feature/text()') if x.strip()]
+    
+        @property
+        @parse_bool
+        @first_element
+        def is_adult_product(self):
+            return self.xpath('./a:IsAdultProduct/text()')
+    
+        @property
+        def item_dimensions(self):
+            return self.mk_dimens_from_xpath('./a:ItemDimensions')
+    
+        @property
+        @first_element
+        def label(self):
+            return self.xpath('./a:Label/text()')
+    
+        @property
+        @parse_float
+        @first_element
+        def list_price(self):
+            return self.xpath('./a:ListPrice/a:FormattedPrice/text()')
+    
+        @property
+        @first_element
+        def manufacturer(self):
+            return self.xpath('./a:Manufacturer/text()')
+    
+        @property
+        @first_element
+        def model(self):
+            return self.xpath('./a:Model/text()')
+    
+        @property
+        @first_element
+        def mpn(self):
+            return self.xpath('./a:MPN/text()')
+    
+        @property
+        @parse_int
+        @first_element
+        def number_of_items(self):
+            return self.xpath('./a:NumberOfItems/text()')
+    
+        @property
+        def package_dimensions(self):
+            return self.mk_dimens_from_xpath('./a:PackageDimensions')
+    
+        @property
+        @parse_int
+        @first_element
+        def package_quantity(self):
+            return self.xpath('./a:PackageQuantity/text()')
+    
+        @property
+        @first_element
+        def part_number(self):
+            return self.xpath('./a:PartNumber/text()')
+    
+        @property
+        @first_element
+        def product_group(self):
+            return self.xpath('./a:ProductGroup/text()')
+    
+        @property
+        @first_element
+        def product_type_name(self):
+            return self.xpath('./a:ProductTypeName/text()')
+    
+        @property
+        @first_element
+        def publication_date(self):
+            return self.xpath('./a:PublicationDate/text()')
+    
+        @property
+        @first_element
+        def publisher(self):
+            return self.xpath('./a:Publisher/text()')
+    
+        @property
+        @first_element
+        def release_date(self):
+            return self.xpath('./a:ReleaseDate/text()')
+    
+        @property
+        @first_element
+        def studio(self):
+            return self.xpath('./a:Studio/text()')
+    
+        @property
+        @first_element
+        def title(self):
+            return self.xpath('./a:Title/text()')
+    
+        @property
+        @first_element
+        def upc(self):
+            return self.xpath('./a:UPC/text()')
+    
+        @property
+        def upc_list(self):
+            return [x.strip() for x in self.xpath('./a:UPCList//a:UPCListElement/text()') if x.strip()]
 
 
 class BrowseNodes(BaseLookupWrapper):
