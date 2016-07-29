@@ -543,6 +543,10 @@ class ItemAttributes(BaseDimensionsWrapper):
     def upc_list(self):
         return [x.strip() for x in self.xpath('./a:ItemAttributes/a:UPCList//a:UPCListElement/text()') if x.strip()]
 
+    @property
+    def item_attributes_element(self):
+        return self.element
+
 
 class BrowseNodes(BaseLookupWrapper):
 
