@@ -291,6 +291,16 @@ class Images(BaseImageWrapper):
         def large_image(self):
             return self.mk_img_from_xpath('./a:LargeImage')
 
+        def all(self):
+            return dict(
+                swatch_image=self.swatch_image.url,
+                small_image=self.small_image.url,
+                thumbnail_image=self.thumbnail_image.url,
+                tiny_image=self.tiny_image.url,
+                medium_image=self.medium_image.url,
+                large_image=self.large_image.url
+            )
+
     @property
     def small_image(self):
         return self.mk_img_from_xpath('./a:SmallImage')

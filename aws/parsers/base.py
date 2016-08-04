@@ -44,6 +44,9 @@ class BaseElementWrapper(object):
             return etree.tostring(self.element)
         return '<Element Non Existent>'
 
+    def __nonzero__(self):
+        return bool(self.element)
+
     @classmethod
     def load(cls, xml_string):
         """
