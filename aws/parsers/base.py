@@ -45,7 +45,7 @@ class BaseElementWrapper(object):
         return '<Element Non Existent>'
 
     def __nonzero__(self):
-        return bool(self.element)
+        return self.element is not None
 
     @classmethod
     def load(cls, xml_string):
