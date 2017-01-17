@@ -72,6 +72,7 @@ class AWS(object):
         self.access_key = access_key
         self.secret_key = secret_key
         self.marketplace = marketplace or MARKETPLACES['us']
+        self.session = requests.Session()
 
     def generate_signature(self, url_params):
         canonical_string = '&'.join(sorted(url_params.split('&')))
@@ -108,7 +109,7 @@ class AWS(object):
             url_params,
             None
         ))
-        response = requests.get(url)
+        response = self.session.get(url)
         content = response.content
         write_response(content, '{}Response.xml'.format(operation))
         return content
