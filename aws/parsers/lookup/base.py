@@ -111,12 +111,12 @@ class BaseErrorWrapper(BaseLookupWrapper):
     @property
     @first_element
     def code(self):
-        return self.xpath('//a:Code/text()')
+        return self.xpath('./a:Code/text()')
 
     @property
     @first_element
     def message(self):
-        return self.xpath('//a:Message/text()')
+        return self.xpath('./a:Message/text()')
 
     def has_error(self):
         """
